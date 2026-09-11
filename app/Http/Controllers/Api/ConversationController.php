@@ -99,6 +99,8 @@ class ConversationController extends Controller
                 return $conversation;
             });
         } else {
+            abort_unless($request->user()->isAdmin(), 403, 'Only an admin can create group chats.');
+
             $userIds = array_unique(array_merge($data['user_ids'], [$authUserId]));
 
             $conversation = DB::transaction(function () use ($authUserId, $userIds, $data) {
@@ -143,6 +145,8 @@ class ConversationController extends Controller
     public function addParticipants(Request $request, Conversation $conversation)
     {
         $this->authorizeParticipant($request, $conversation);
+
+        abort_unless($request->user()->isAdmin(), 403, 'Only an admin can invite users to groups.');
 
         if (! $conversation->isGroup()) {
             return response()->json(['message' => 'Only group conversations support adding participants.'], 422);

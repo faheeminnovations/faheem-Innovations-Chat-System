@@ -8,6 +8,7 @@
      data-auth-id="{{ $authUser->id }}"
      data-auth-name="{{ $authUser->name }}"
      data-auth-avatar="{{ $authUser->avatar }}"
+    data-is-admin="{{ $authUser->isAdmin() ? '1' : '0' }}"
      data-initial-conversation="{{ $initialConversationId }}">
 
     {{-- Sidebar --}}
@@ -19,6 +20,10 @@
                     class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-lg leading-none">&#128276;</button>
                 <button id="install-app-btn" type="button" title="Install app"
                     class="install-app-btn hidden">&#8615;</button>
+                @if ($isAdmin)
+                    <button id="invite-user-btn" type="button" title="Invite user"
+                        class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-lg leading-none">&#43;</button>
+                @endif
                 <button id="new-chat-btn" title="New chat"
                     class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-xl leading-none">+</button>
             </div>
@@ -122,6 +127,21 @@
                 class="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium py-2.5 rounded-lg transition">
                 Start chat
             </button>
+        </div>
+    </div>
+
+    <div id="invite-user-modal" class="hidden fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+        <div class="bg-white w-full max-w-md rounded-xl shadow-lg p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-semibold text-gray-800">Invite user</h2>
+                <button id="close-invite-modal-btn" type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
+            </div>
+            <form id="invite-user-form" class="space-y-3">
+                <input id="invite-name-input" type="text" required placeholder="User name" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <input id="invite-email-input" type="email" required placeholder="Email address" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <input id="invite-password-input" type="password" required minlength="8" placeholder="Temporary password (8+ characters)" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2.5 rounded-lg">Send invite</button>
+            </form>
         </div>
     </div>
 </div>

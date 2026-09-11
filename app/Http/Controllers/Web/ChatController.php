@@ -15,6 +15,7 @@ class ChatController extends Controller
     {
         return view('chat.index', [
             'authUser' => $request->user(),
+            'isAdmin' => $request->user()->isAdmin(),
             'initialConversationId' => $conversation,
         ]);
     }

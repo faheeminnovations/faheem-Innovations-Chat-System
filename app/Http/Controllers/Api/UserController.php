@@ -5,9 +5,33 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function store(Request $request)
+    {
+        abort_unless($request->user()->isAdmin(), 403, 'Only an admin can invite users.');
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'max:255'],
+        ]);
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => 'user',
+        ]);
+
+        return response()->json([
+            'message' => 'User invited successfully.',
+            'user' => $user->only(['id', 'name', 'email', 'role']),
+        ], 201);
+    }
+
     /**
      * Search / list users you can start a chat with (everyone except yourself).
      * GET /api/users?q=ali

@@ -21,8 +21,6 @@ Route::get('/', fn () => redirect()->route(auth()->check() ? 'chat.index' : 'log
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -34,6 +32,7 @@ Route::middleware('auth')->group(function () {
     // AJAX endpoints used by public/js/chat.js (session + CSRF, not tokens)
     Route::prefix('app')->group(function () {
         Route::get('/users', [UserController::class, 'index']);
+        Route::post('/users', [UserController::class, 'store']);
         Route::post('/heartbeat', [UserController::class, 'heartbeat']);
 
         Route::get('/conversations', [ConversationController::class, 'index']);

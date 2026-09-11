@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             User::factory()->raw([
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'role' => 'user',
             ]),
         );
     }

@@ -4,6 +4,7 @@
     const appEl = document.getElementById('app');
     const AUTH_ID = parseInt(appEl.dataset.authId, 10);
     const AUTH_NAME = appEl.dataset.authName;
+    const IS_ADMIN = appEl.dataset.isAdmin === '1';
     const INITIAL_CONVERSATION_ID = appEl.dataset.initialConversation || null;
     const MAX_UPLOAD_BYTES = 500 * 1024 * 1024;
 
@@ -575,6 +576,8 @@
         $('user-search-results').innerHTML = '';
         $('selected-users').innerHTML = '';
         $('create-chat-btn').disabled = true;
+        const groupButton = document.querySelector('[data-mode="group"]');
+        if (groupButton) groupButton.classList.toggle('hidden', !IS_ADMIN);
         document.querySelectorAll('.chat-mode-btn').forEach((btn) => setModeBtnStyle(btn, btn.dataset.mode === 'private'));
     }
 
@@ -693,6 +696,35 @@
             openConversation(conv.id);
         } catch (e) { alert(e.message); }
     });
+
+    const inviteModal = $('invite-user-modal');
+    const inviteButton = $('invite-user-btn');
+    if (IS_ADMIN && inviteModal && inviteButton) {
+        inviteButton.addEventListener('click', () => inviteModal.classList.remove('hidden'));
+        $('close-invite-modal-btn').addEventListener('click', () => inviteModal.classList.add('hidden'));
+        inviteModal.addEventListener('click', (e) => {
+            if (e.target === inviteModal) inviteModal.classList.add('hidden');
+        });
+        $('invite-user-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = e.currentTarget.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            try {
+                const result = await apiPost('/app/users', {
+                    name: $('invite-name-input').value.trim(),
+                    email: $('invite-email-input').value.trim(),
+                    password: $('invite-password-input').value,
+                });
+                alert(`${result.user.name} invited successfully.`);
+                e.currentTarget.reset();
+                inviteModal.classList.add('hidden');
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    }
 
     // ---------- boot ----------
 

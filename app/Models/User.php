@@ -18,6 +18,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
         'avatar',
         'is_online',
         'last_seen_at',
@@ -66,5 +67,10 @@ class User extends Authenticatable
     public function getIsRecentlyOnlineAttribute(): bool
     {
         return $this->last_seen_at && $this->last_seen_at->gt(now()->subMinutes(2));
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }
