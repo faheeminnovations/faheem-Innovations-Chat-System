@@ -615,7 +615,7 @@
             container.innerHTML = `
                 <div class="p-4 text-center">
                     <p class="text-xs text-gray-400">No users found</p>
-                    ${IS_ADMIN ? '<button type="button" id="invite-from-search-btn" class="mt-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300">+ Invite new user</button>' : ''}
+                    <button type="button" id="invite-from-search-btn" class="mt-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300">+ Invite new user</button>
                 </div>`;
             const inviteFromSearchButton = $('invite-from-search-btn');
             if (inviteFromSearchButton) {

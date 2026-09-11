@@ -20,10 +20,8 @@
                     class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-lg leading-none">&#128276;</button>
                 <button id="install-app-btn" type="button" title="Install app"
                     class="install-app-btn hidden">&#8615;</button>
-                @if ($isAdmin)
-                    <button id="invite-user-btn" type="button" title="Invite user"
-                        class="admin-invite-btn">+ <span>Invite user</span></button>
-                @endif
+                <button id="invite-user-btn" type="button" title="Invite user"
+                    class="admin-invite-btn">+ <span>Invite user</span></button>
                 <button id="new-chat-btn" title="New chat"
                     class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-xl leading-none">+</button>
             </div>
@@ -119,11 +117,9 @@
             <input type="text" id="user-search-input" placeholder="Search people by name or email…"
                 class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
 
-            @if ($isAdmin)
-                <button id="send-invite-from-chat-btn" type="button" class="admin-invite-modal-btn">
-                    + Send invite to a new user
-                </button>
-            @endif
+            <button id="send-invite-from-chat-btn" type="button" class="admin-invite-modal-btn">
+                + Send invite to a new user
+            </button>
 
             <div id="selected-users" class="flex flex-wrap gap-1.5 mb-2"></div>
 

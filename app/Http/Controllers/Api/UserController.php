@@ -14,8 +14,6 @@ class UserController extends Controller
 {
     public function store(Request $request)
     {
-        abort_unless($request->user()->isAdmin(), 403, 'Only an admin can invite users.');
-
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
