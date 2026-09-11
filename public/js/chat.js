@@ -717,7 +717,7 @@
         inviteModal.classList.remove('hidden');
     }
 
-    if (IS_ADMIN && inviteModal && inviteButton) {
+    if (inviteModal && inviteButton) {
         inviteButton.addEventListener('click', () => {
             state.inviteFromNewChat = false;
             openInviteModal();
@@ -754,7 +754,7 @@
     }
 
     const sendInviteFromChatButton = $('send-invite-from-chat-btn');
-    if (IS_ADMIN && sendInviteFromChatButton) {
+    if (sendInviteFromChatButton && inviteModal) {
         sendInviteFromChatButton.addEventListener('click', () => {
             state.inviteFromNewChat = true;
             const email = $('user-search-input').value.trim();

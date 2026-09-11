@@ -119,11 +119,9 @@
             <input type="text" id="user-search-input" placeholder="Search people by name or email…"
                 class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
 
-            @if ($isAdmin)
-                <button id="send-invite-from-chat-btn" type="button" class="admin-invite-modal-btn">
-                    + Send invite to a new user
-                </button>
-            @endif
+            <button id="send-invite-from-chat-btn" type="button" class="admin-invite-modal-btn">
+                + Send invite to a new user
+            </button>
 
             <div id="selected-users" class="flex flex-wrap gap-1.5 mb-2"></div>
 
