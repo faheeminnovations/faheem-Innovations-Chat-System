@@ -738,7 +738,8 @@
         });
         $('invite-user-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitButton = e.currentTarget.querySelector('button[type="submit"]');
+            const form = e.currentTarget;
+            const submitButton = form.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             try {
                 const result = await apiPost('/app/users', {
@@ -747,7 +748,7 @@
                     password: $('invite-password-input').value,
                 });
                 alert(`${result.user.name} invited successfully.`);
-                e.currentTarget.reset();
+                form.reset();
                 inviteModal.classList.add('hidden');
                 if (state.inviteFromNewChat && state.newChatMode === 'private') {
                     const conv = await apiPost('/app/conversations', { type: 'private', user_id: result.user.id });
