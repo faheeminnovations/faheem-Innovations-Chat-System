@@ -21,6 +21,7 @@
         newChatMode: 'private',
         selectedUserIds: new Set(),
         selectedUsersMap: new Map(),
+        inviteFromNewChat: false,
         notificationCount: 0,
         audioContext: null,
         timers: { conversations: null, messages: null, typing: null, heartbeat: null },
@@ -611,7 +612,19 @@
     function renderUserResults(users) {
         const container = $('user-search-results');
         if (!users.length) {
-            container.innerHTML = `<div class="p-3 text-xs text-gray-400 text-center">No users found</div>`;
+            container.innerHTML = `
+                <div class="p-4 text-center">
+                    <p class="text-xs text-gray-400">No users found</p>
+                    ${IS_ADMIN ? '<button type="button" id="invite-from-search-btn" class="mt-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300">+ Invite new user</button>' : ''}
+                </div>`;
+            const inviteFromSearchButton = $('invite-from-search-btn');
+            if (inviteFromSearchButton) {
+                inviteFromSearchButton.addEventListener('click', () => {
+                    state.inviteFromNewChat = true;
+                    modal.classList.add('hidden');
+                    openInviteModal($('user-search-input').value.trim());
+                });
+            }
             return;
         }
         container.innerHTML = users.map((u) => `
@@ -699,8 +712,16 @@
 
     const inviteModal = $('invite-user-modal');
     const inviteButton = $('invite-user-btn');
+    function openInviteModal(email = '') {
+        $('invite-email-input').value = email;
+        inviteModal.classList.remove('hidden');
+    }
+
     if (IS_ADMIN && inviteModal && inviteButton) {
-        inviteButton.addEventListener('click', () => inviteModal.classList.remove('hidden'));
+        inviteButton.addEventListener('click', () => {
+            state.inviteFromNewChat = false;
+            openInviteModal();
+        });
         $('close-invite-modal-btn').addEventListener('click', () => inviteModal.classList.add('hidden'));
         inviteModal.addEventListener('click', (e) => {
             if (e.target === inviteModal) inviteModal.classList.add('hidden');
@@ -718,6 +739,12 @@
                 alert(`${result.user.name} invited successfully.`);
                 e.currentTarget.reset();
                 inviteModal.classList.add('hidden');
+                if (state.inviteFromNewChat && state.newChatMode === 'private') {
+                    const conv = await apiPost('/app/conversations', { type: 'private', user_id: result.user.id });
+                    await loadConversations();
+                    openConversation(conv.id);
+                }
+                state.inviteFromNewChat = false;
             } catch (error) {
                 alert(error.message);
             } finally {
