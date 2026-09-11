@@ -712,8 +712,12 @@
 
     const inviteModal = $('invite-user-modal');
     const inviteButton = $('invite-user-btn');
+    const inviteForm = $('invite-user-form');
+
     function openInviteModal(email = '') {
-        $('invite-email-input').value = email;
+        if (inviteForm) inviteForm.reset();
+        const emailField = $('invite-email-input');
+        if (emailField) emailField.value = email;
         inviteModal.classList.remove('hidden');
     }
 
@@ -722,9 +726,15 @@
             state.inviteFromNewChat = false;
             openInviteModal();
         });
-        $('close-invite-modal-btn').addEventListener('click', () => inviteModal.classList.add('hidden'));
+        $('close-invite-modal-btn').addEventListener('click', () => {
+            if (inviteForm) inviteForm.reset();
+            inviteModal.classList.add('hidden');
+        });
         inviteModal.addEventListener('click', (e) => {
-            if (e.target === inviteModal) inviteModal.classList.add('hidden');
+            if (e.target === inviteModal) {
+                if (inviteForm) inviteForm.reset();
+                inviteModal.classList.add('hidden');
+            }
         });
         $('invite-user-form').addEventListener('submit', async (e) => {
             e.preventDefault();

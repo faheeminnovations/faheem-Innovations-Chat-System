@@ -140,10 +140,10 @@
                 <h2 class="font-semibold text-gray-800">Invite user</h2>
                 <button id="close-invite-modal-btn" type="button" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
             </div>
-            <form id="invite-user-form" class="space-y-3">
-                <input id="invite-name-input" type="text" required placeholder="User name" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                <input id="invite-email-input" type="email" required placeholder="Email address" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                <input id="invite-password-input" type="password" required minlength="8" placeholder="Temporary password (8+ characters)" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+            <form id="invite-user-form" class="space-y-3" autocomplete="off">
+                <input id="invite-name-input" type="text" required placeholder="User name" autocomplete="off" spellcheck="false" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <input id="invite-email-input" type="email" required placeholder="Email address" autocomplete="off" spellcheck="false" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <input id="invite-password-input" type="password" required minlength="8" placeholder="Temporary password (8+ characters)" autocomplete="new-password" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2.5 rounded-lg">Send invite</button>
             </form>
         </div>
