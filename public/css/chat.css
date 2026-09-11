@@ -490,6 +490,20 @@ body {
 #new-chat-modal .text-gray-400 { color: var(--wa-muted) !important; }
 #create-chat-btn,
 .chat-mode-btn.bg-indigo-600 { background: var(--wa-accent) !important; border-color: var(--wa-accent) !important; color: #0b141a !important; }
+.admin-invite-modal-btn {
+    width: 100%;
+    margin: -0.35rem 0 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid rgba(0, 168, 132, 0.45);
+    border-radius: 0.5rem;
+    background: rgba(0, 168, 132, 0.12);
+    color: #25d366;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+.admin-invite-modal-btn:hover { background: rgba(0, 168, 132, 0.22); }
 
 @media (max-width: 760px) {
     html,

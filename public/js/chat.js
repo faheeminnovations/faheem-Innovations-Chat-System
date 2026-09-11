@@ -753,6 +753,16 @@
         });
     }
 
+    const sendInviteFromChatButton = $('send-invite-from-chat-btn');
+    if (IS_ADMIN && sendInviteFromChatButton) {
+        sendInviteFromChatButton.addEventListener('click', () => {
+            state.inviteFromNewChat = true;
+            const email = $('user-search-input').value.trim();
+            modal.classList.add('hidden');
+            openInviteModal(email);
+        });
+    }
+
     // ---------- boot ----------
 
     async function init() {
