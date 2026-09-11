@@ -33,17 +33,18 @@ class UserController extends Controller
     }
 
     /**
-     * Search / list users you can start a chat with (everyone except yourself).
-     * GET /api/users?q=ali
+     * Search users for private or self conversations.
+     * GET /api/users?q=ali@example.com
      */
     public function index(Request $request)
     {
-        $query = User::query()->where('id', '!=', $request->user()->id);
+        $query = User::query();
 
-        if ($search = $request->query('q')) {
+        if ($search = trim((string) $request->query('q', ''))) {
+            $search = mb_strtolower($search);
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(email) LIKE ?', ["%{$search}%"]);
             });
         }
 
