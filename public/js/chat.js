@@ -12,6 +12,8 @@
         conversations: [],
         currentConversationId: null,
         lastMessageId: 0,
+        renderedMessageIds: new Set(),
+        isSending: false,
         selectedFile: null,
         newChatMode: 'private',
         selectedUserIds: new Set(),
@@ -172,6 +174,7 @@
 
         state.currentConversationId = id;
         state.lastMessageId = 0;
+        state.renderedMessageIds = new Set();
 
         $('empty-state').classList.add('hidden');
         $('chat-panel').classList.remove('hidden');
@@ -248,6 +251,9 @@
 
     function appendMessage(msg, scroll) {
         const container = $('messages-container');
+        if (msg.id && state.renderedMessageIds.has(msg.id)) return;
+        if (msg.id) state.renderedMessageIds.add(msg.id);
+
         const mine = msg.sender ? msg.sender.id === AUTH_ID : msg.user_id === AUTH_ID;
         const senderName = msg.sender ? msg.sender.name : '';
         const previous = container.lastElementChild;
@@ -293,7 +299,7 @@
     $('message-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = state.currentConversationId;
-        if (!id) return;
+        if (!id || state.isSending) return;
 
         const input = $('message-input');
         const body = input.value.trim();
@@ -303,6 +309,8 @@
         if (body) formData.append('body', body);
         if (state.selectedFile) formData.append('file', state.selectedFile);
 
+        state.isSending = true;
+        $('message-form').classList.add('is-sending');
         $('send-btn').disabled = true;
         try {
             const msg = await apiPost(`/app/conversations/${id}/messages`, formData);
@@ -314,6 +322,8 @@
         } catch (err) {
             alert(err.message);
         } finally {
+            state.isSending = false;
+            $('message-form').classList.remove('is-sending');
             $('send-btn').disabled = false;
         }
     });
