@@ -7,6 +7,7 @@ use App\Mail\UserInviteMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -35,7 +36,12 @@ class UserController extends Controller
                 $data['password'],
                 rtrim($request->getSchemeAndHttpHost() . $request->getBaseUrl(), '/') . '/login',
             ));
+            Log::info('Invite email sent.', ['recipient' => $user->email]);
         } catch (\Throwable $exception) {
+            Log::error('Invite email failed.', [
+                'recipient' => $user->email,
+                'error' => $exception->getMessage(),
+            ]);
             report($exception);
 
             return response()->json([
