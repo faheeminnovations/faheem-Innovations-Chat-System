@@ -21,6 +21,14 @@
         </div>
 
         <div id="conversation-list" class="flex-1 overflow-y-auto">
+            <button id="saved-messages-btn" type="button"
+                class="w-full flex items-center gap-3 px-4 py-3 border-b border-gray-100 text-left hover:bg-blue-50 transition">
+                <div class="avatar-circle w-11 h-11 text-sm bg-blue-100 text-blue-700">&#9733;</div>
+                <div class="min-w-0">
+                    <p class="text-sm font-medium text-gray-800">Saved messages</p>
+                    <p class="text-xs text-gray-500 truncate">Message yourself</p>
+                </div>
+            </button>
             <div class="p-6 text-center text-sm text-gray-400">Loading chats…</div>
         </div>
 
@@ -58,7 +66,7 @@
             <div id="typing-indicator" class="px-5 text-xs text-gray-400 h-5 shrink-0"></div>
 
             <form id="message-form" class="border-t border-gray-200 p-3 flex items-end gap-2 shrink-0">
-                <input type="file" id="file-input" class="hidden">
+                <input type="file" id="file-input" accept="image/*,.zip,.pdf,.doc,.docx,.xls,.xlsx,.txt" class="hidden">
                 <button type="button" id="attach-btn" title="Attach a file"
                     class="w-10 h-10 shrink-0 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 text-lg">📎</button>
                 <div id="file-preview" class="hidden text-xs text-gray-600 bg-gray-100 rounded-lg px-3 py-2 mr-1"></div>

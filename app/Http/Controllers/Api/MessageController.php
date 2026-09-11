@@ -78,7 +78,7 @@ class MessageController extends Controller
 
         $data = $request->validate([
             'body' => ['nullable', 'string', 'max:5000'],
-            'file' => ['nullable', 'file', 'max:20480'], // 20MB
+            'file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,gif,webp,zip,pdf,doc,docx,xls,xlsx,txt', 'max:20480'], // 20MB
         ]);
 
         if (empty($data['body']) && ! $request->hasFile('file')) {

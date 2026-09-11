@@ -29,16 +29,16 @@
 }
 
 .msg-bubble {
-    max-width: 70%;
-    padding: 0.5rem 0.85rem;
-    border-radius: 1rem;
+    max-width: min(76%, 34rem);
+    padding: 0.6rem 0.9rem;
+    border-radius: 1.15rem;
     font-size: 0.875rem;
     line-height: 1.4;
     word-wrap: break-word;
     white-space: pre-wrap;
 }
 .msg-bubble.mine {
-    background-color: #4f46e5;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
     border-bottom-right-radius: 0.25rem;
 }
@@ -47,6 +47,68 @@
     color: #1f2937;
     border: 1px solid #e5e7eb;
     border-bottom-left-radius: 0.25rem;
+}
+
+.message-row {
+    animation: message-in 0.18s ease-out;
+}
+.message-row-grouped {
+    margin-top: -0.5rem;
+}
+.message-sender {
+    color: #9ca3af;
+    font-size: 0.6875rem;
+    margin: 0 0 0.15rem 0.65rem;
+}
+.attachment-image {
+    display: block;
+    margin: 0.35rem -0.3rem -0.25rem;
+    overflow: hidden;
+    border-radius: 0.85rem;
+}
+.attachment-image img {
+    display: block;
+    width: min(18rem, 100%);
+    max-height: 18rem;
+    object-fit: cover;
+}
+.attachment-file {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 14rem;
+    margin-top: 0.35rem;
+    padding: 0.55rem 0.65rem;
+    border-radius: 0.7rem;
+    background: rgba(255, 255, 255, 0.14);
+    text-decoration: none;
+}
+.theirs .attachment-file {
+    background: #f3f4f6;
+}
+.attachment-file-icon {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.35rem 0.25rem;
+    border-radius: 0.35rem;
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+.attachment-file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    font-size: 0.75rem;
+}
+.attachment-download {
+    font-size: 0.65rem;
+    opacity: 0.75;
+}
+@keyframes message-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .avatar-circle {

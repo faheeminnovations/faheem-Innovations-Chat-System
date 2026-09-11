@@ -60,10 +60,6 @@ class ConversationController extends Controller
         if ($data['type'] === 'private') {
             $otherUserId = (int) $data['user_id'];
 
-            if ($otherUserId === $authUserId) {
-                return response()->json(['message' => 'You cannot start a chat with yourself.'], 422);
-            }
-
             // Reuse an existing private conversation between these two users, if any.
             $existing = Conversation::query()
                 ->where('type', 'private')
@@ -224,8 +220,9 @@ class ConversationController extends Controller
             $title = $conversation->name;
             $avatar = $conversation->avatar;
         } else {
-            $other = $conversation->users->firstWhere('id', '!=', $userId);
-            $title = $other?->name ?? 'Unknown user';
+            $other = $conversation->users->firstWhere('id', '!=', $userId)
+                ?? $conversation->users->firstWhere('id', $userId);
+            $title = $other?->id === $userId ? 'Saved messages' : ($other?->name ?? 'Unknown user');
             $avatar = $other?->avatar;
         }
 
@@ -234,6 +231,7 @@ class ConversationController extends Controller
             'type' => $conversation->type,
             'title' => $title,
             'avatar' => $avatar,
+            'is_self' => ! $conversation->isGroup() && isset($other) && $other?->id === $userId,
             'other_user' => $conversation->isGroup() ? null : $conversation->users->firstWhere('id', '!=', $userId),
             'participants' => $conversation->users->map(fn (User $u) => [
                 'id' => $u->id,

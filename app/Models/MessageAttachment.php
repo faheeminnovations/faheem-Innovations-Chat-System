@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class MessageAttachment extends Model
 {
+    protected $appends = ['url'];
+
     protected $fillable = [
         'message_id',
         'file_path',
@@ -22,6 +23,6 @@ class MessageAttachment extends Model
 
     public function getUrlAttribute(): string
     {
-        return Storage::disk('public')->url($this->file_path);
+        return url('/storage/' . ltrim($this->file_path, '/'));
     }
 }

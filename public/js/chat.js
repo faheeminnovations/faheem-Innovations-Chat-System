@@ -93,13 +93,16 @@
 
     function renderConversationList() {
         const container = $('conversation-list');
+        const savedMessages = container.querySelector('#saved-messages-btn');
+        const savedMessagesHtml = savedMessages ? savedMessages.outerHTML : '';
 
         if (!state.conversations.length) {
-            container.innerHTML = `<div class="p-6 text-center text-sm text-gray-400">No chats yet. Tap "+" to start one.</div>`;
+            container.innerHTML = savedMessagesHtml + `<div class="p-6 text-center text-sm text-gray-400">No chats yet. Tap "+" to start one.</div>`;
+            bindSavedMessagesButton();
             return;
         }
 
-        container.innerHTML = state.conversations.map((c) => {
+        container.innerHTML = savedMessagesHtml + state.conversations.map((c) => {
             const active = c.id === state.currentConversationId ? 'active' : '';
             const isOnline = c.type === 'private' && c.other_user && c.other_user.is_online;
             const preview = c.last_message
@@ -128,6 +131,22 @@
         container.querySelectorAll('.conversation-item').forEach((el) => {
             el.addEventListener('click', () => openConversation(parseInt(el.dataset.id, 10)));
         });
+        bindSavedMessagesButton();
+    }
+
+    function bindSavedMessagesButton() {
+        const button = $('saved-messages-btn');
+        if (button) button.addEventListener('click', openSavedMessages);
+    }
+
+    async function openSavedMessages() {
+        try {
+            const conv = await apiPost('/app/conversations', { type: 'private', user_id: AUTH_ID });
+            await loadConversations();
+            openConversation(conv.id);
+        } catch (e) {
+            alert(e.message);
+        }
     }
 
     function truncate(str, len) {
@@ -181,7 +200,9 @@
             return;
         }
         const isOnline = conv.type === 'private' && conv.other_user && conv.other_user.is_online;
-        const subtitle = conv.type === 'group'
+        const subtitle = conv.is_self
+            ? 'Only you'
+            : conv.type === 'group'
             ? `${conv.participants.length} members`
             : (isOnline ? 'Online' : 'Offline');
 
@@ -229,20 +250,23 @@
         const container = $('messages-container');
         const mine = msg.sender ? msg.sender.id === AUTH_ID : msg.user_id === AUTH_ID;
         const senderName = msg.sender ? msg.sender.name : '';
+        const previous = container.lastElementChild;
+        const previousMine = previous && previous.dataset.senderId === String(msg.sender ? msg.sender.id : msg.user_id);
 
         let attachmentHtml = '';
         (msg.attachments || []).forEach((att) => {
             if (att.file_type && att.file_type.startsWith('image/')) {
-                attachmentHtml += `<a href="${att.url}" download="${escapeHtml(att.file_name)}" class="block" title="Download ${escapeHtml(att.file_name)}"><img src="${att.url}" class="mt-1 rounded-lg max-w-[220px] max-h-[220px] object-cover"></a>`;
+                attachmentHtml += `<a href="${att.url}" download="${escapeHtml(att.file_name)}" class="attachment-image" title="Download ${escapeHtml(att.file_name)}"><img src="${att.url}" alt="${escapeHtml(att.file_name)}" loading="lazy"></a>`;
             } else {
-                attachmentHtml += `<a href="${att.url}" download="${escapeHtml(att.file_name)}" class="mt-1 flex items-center gap-1 text-xs underline">Download ${escapeHtml(att.file_name)}</a>`;
+                attachmentHtml += `<a href="${att.url}" download="${escapeHtml(att.file_name)}" class="attachment-file"><span class="attachment-file-icon">${att.file_name.toLowerCase().endsWith('.zip') ? 'ZIP' : 'FILE'}</span><span class="attachment-file-name">${escapeHtml(att.file_name)}</span><span class="attachment-download">Download</span></a>`;
             }
         });
 
         const wrap = document.createElement('div');
-        wrap.className = `flex flex-col ${mine ? 'items-end' : 'items-start'}`;
+        wrap.dataset.senderId = String(msg.sender ? msg.sender.id : msg.user_id);
+        wrap.className = `message-row flex flex-col ${mine ? 'items-end' : 'items-start'} ${previousMine ? 'message-row-grouped' : ''}`;
         wrap.innerHTML = `
-            ${!mine ? `<span class="text-[11px] text-gray-400 mb-0.5 ml-1">${escapeHtml(senderName)}</span>` : ''}
+            ${!mine && !previousMine ? `<span class="message-sender">${escapeHtml(senderName)}</span>` : ''}
             <div class="msg-bubble ${mine ? 'mine' : 'theirs'}">
                 ${msg.body ? escapeHtml(msg.body) : ''}
                 ${attachmentHtml}
