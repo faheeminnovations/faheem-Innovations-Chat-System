@@ -14,10 +14,12 @@
     <aside class="w-[320px] shrink-0 bg-white border-r border-gray-200 flex flex-col">
         <div class="h-16 flex items-center justify-between px-4 border-b border-gray-200 shrink-0">
             <img src="{{ asset('images/faheem-innovations-logo.svg') }}" alt="Faheem Innovations" class="w-[190px] h-auto">
-            <button id="new-chat-btn" title="New chat"
-                class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-xl leading-none">
-                +
-            </button>
+            <div class="flex items-center gap-1">
+                <button id="notifications-btn" type="button" title="Enable message notifications"
+                    class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-lg leading-none">&#128276;</button>
+                <button id="new-chat-btn" title="New chat"
+                    class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-xl leading-none">+</button>
+            </div>
         </div>
 
         <div id="conversation-list" class="flex-1 overflow-y-auto">

@@ -19,6 +19,8 @@
         newChatMode: 'private',
         selectedUserIds: new Set(),
         selectedUsersMap: new Map(),
+        notificationCount: 0,
+        audioContext: null,
         timers: { conversations: null, messages: null, typing: null, heartbeat: null },
         lastTypingSentAt: 0,
     };
@@ -81,6 +83,69 @@
         body: data instanceof FormData ? data : JSON.stringify(data || {}),
     });
     const apiDelete = (url) => api(url, { method: 'DELETE' });
+
+    function updateNotificationTitle() {
+        document.title = state.notificationCount > 0
+            ? `(${state.notificationCount}) Faheem Innovations`
+            : 'Faheem Innovations';
+    }
+
+    function playNotificationSound() {
+        if (!state.audioContext) return;
+        const oscillator = state.audioContext.createOscillator();
+        const gain = state.audioContext.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(740, state.audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(520, state.audioContext.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.0001, state.audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.08, state.audioContext.currentTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, state.audioContext.currentTime + 0.18);
+        oscillator.connect(gain);
+        gain.connect(state.audioContext.destination);
+        oscillator.start();
+        oscillator.stop(state.audioContext.currentTime + 0.2);
+    }
+
+    function notifyNewMessage(message) {
+        if (message.sender_id === AUTH_ID || (message.sender && message.sender.id === AUTH_ID)) return;
+
+        state.notificationCount += 1;
+        updateNotificationTitle();
+        playNotificationSound();
+
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+            const sender = message.sender?.name || 'New message';
+            const content = message.body || (message.type === 'image' ? '📷 Photo' : '📎 File');
+            const notification = new Notification(sender, {
+                body: content,
+                icon: '/images/faheem-innovations-logo.svg',
+                tag: `faheem-message-${message.id}`,
+            });
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+        }
+    }
+
+    async function enableNotifications() {
+        if (typeof Notification === 'undefined') {
+            alert('Browser notifications are not supported here.');
+            return;
+        }
+
+        if (Notification.permission === 'denied') {
+            alert('Notifications are blocked in your browser settings.');
+            return;
+        }
+
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            $('notifications-btn').classList.add('notifications-enabled');
+            $('notifications-btn').title = 'Message notifications enabled';
+            state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
 
     function uploadMessage(url, formData) {
         return new Promise((resolve, reject) => {
@@ -256,11 +321,15 @@
             : (isOnline ? 'Online' : 'Offline');
 
         header.innerHTML = `
+            <button id="chat-back-btn" type="button" class="chat-back-btn" title="Back to chats" aria-label="Back to chats">&#8592;</button>
             <div class="avatar-circle w-9 h-9 text-sm">${escapeHtml(initials(conv.title))}</div>
             <div class="min-w-0">
                 <p class="text-sm font-semibold text-gray-800 truncate">${escapeHtml(conv.title)}</p>
                 <p class="text-xs ${isOnline ? 'text-green-600' : 'text-gray-400'}">${escapeHtml(subtitle)}</p>
             </div>`;
+        $('chat-back-btn').addEventListener('click', () => {
+            appEl.classList.remove('chat-open');
+        });
     }
 
     // ---------- messages ----------
@@ -285,7 +354,11 @@
         try {
             const data = await apiGet(`/app/conversations/${id}/messages?after_id=${state.lastMessageId}`);
             if (data.messages.length) {
-                data.messages.forEach((m) => appendMessage(m, true));
+                data.messages.forEach((m) => {
+                    const alreadyRendered = m.id && state.renderedMessageIds.has(m.id);
+                    appendMessage(m, true);
+                    if (!alreadyRendered && (document.hidden || !document.hasFocus())) notifyNewMessage(m);
+                });
                 state.lastMessageId = data.messages[data.messages.length - 1].id;
                 markRead(id);
                 loadConversations(); // refresh sidebar preview/unread counts
@@ -393,6 +466,12 @@
             state.lastTypingSentAt = now;
             apiPost(`/app/conversations/${state.currentConversationId}/typing`).catch(() => {});
         }
+    });
+
+    $('notifications-btn').addEventListener('click', enableNotifications);
+    window.addEventListener('focus', () => {
+        state.notificationCount = 0;
+        updateNotificationTitle();
     });
 
     // ---------- attachments ----------
