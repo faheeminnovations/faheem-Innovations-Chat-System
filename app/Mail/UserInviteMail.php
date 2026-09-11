@@ -16,6 +16,7 @@ class UserInviteMail extends Mailable
         public string $userName,
         public string $userEmail,
         public string $temporaryPassword,
+        public ?string $loginUrl = null,
     ) {
     }
 
@@ -31,7 +32,7 @@ class UserInviteMail extends Mailable
         return new Content(
             view: 'emails.user-invite',
             with: [
-                'loginUrl' => url('/login'),
+                'loginUrl' => $this->loginUrl ?: url('/login'),
             ],
         );
     }

@@ -33,6 +33,7 @@ class UserController extends Controller
                 $user->name,
                 $user->email,
                 $data['password'],
+                rtrim($request->getSchemeAndHttpHost() . $request->getBaseUrl(), '/') . '/login',
             ));
         } catch (\Throwable $exception) {
             report($exception);
