@@ -22,5 +22,7 @@ class AdminSeeder extends Seeder
                 'role' => 'admin',
             ],
         );
+
+        User::where('email', 'admin@example.com')->update(['role' => 'admin']);
     }
 }
