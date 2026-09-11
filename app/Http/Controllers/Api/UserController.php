@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\UserInviteMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -26,8 +28,22 @@ class UserController extends Controller
             'role' => 'user',
         ]);
 
+        try {
+            Mail::to($user->email)->send(new UserInviteMail(
+                $user->name,
+                $user->email,
+                $data['password'],
+            ));
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return response()->json([
+                'message' => 'User was created, but the invitation email could not be sent. Check the SMTP settings and try again.',
+            ], 502);
+        }
+
         return response()->json([
-            'message' => 'User invited successfully.',
+            'message' => 'User invited and email sent successfully.',
             'user' => $user->only(['id', 'name', 'email', 'role']),
         ], 201);
     }
