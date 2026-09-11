@@ -22,7 +22,7 @@
                     class="install-app-btn hidden">&#8615;</button>
                 @if ($isAdmin)
                     <button id="invite-user-btn" type="button" title="Invite user"
-                        class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-lg leading-none">&#43;</button>
+                        class="admin-invite-btn">+ <span>Invite user</span></button>
                 @endif
                 <button id="new-chat-btn" title="New chat"
                     class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600 text-xl leading-none">+</button>

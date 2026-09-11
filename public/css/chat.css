@@ -260,6 +260,24 @@ body {
     border-radius: 999px;
     cursor: pointer;
 }
+.admin-invite-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    height: 2rem;
+    padding: 0 0.55rem;
+    border: 1px solid rgba(0, 168, 132, 0.45);
+    border-radius: 0.45rem;
+    background: rgba(0, 168, 132, 0.12);
+    color: #25d366;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.admin-invite-btn:hover {
+    background: rgba(0, 168, 132, 0.22);
+}
 
 #conversation-list,
 #messages-container {
