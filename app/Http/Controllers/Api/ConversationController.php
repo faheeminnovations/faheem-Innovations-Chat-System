@@ -60,12 +60,19 @@ class ConversationController extends Controller
         if ($data['type'] === 'private') {
             $otherUserId = (int) $data['user_id'];
 
-            // Reuse an existing private conversation between these two users, if any.
-            $existing = Conversation::query()
+            // Self-chat must contain only the authenticated user; normal private
+            // chats are matched by both participant IDs.
+            $existingQuery = Conversation::query()
                 ->where('type', 'private')
-                ->whereHas('users', fn ($q) => $q->where('users.id', $authUserId))
-                ->whereHas('users', fn ($q) => $q->where('users.id', $otherUserId))
-                ->first();
+                ->whereHas('users', fn ($q) => $q->where('users.id', $authUserId));
+
+            if ($otherUserId === $authUserId) {
+                $existingQuery->whereDoesntHave('users', fn ($q) => $q->where('users.id', '!=', $authUserId));
+            } else {
+                $existingQuery->whereHas('users', fn ($q) => $q->where('users.id', $otherUserId));
+            }
+
+            $existing = $existingQuery->first();
 
             if ($existing) {
                 return response()->json(
@@ -79,10 +86,15 @@ class ConversationController extends Controller
                     'created_by' => $authUserId,
                 ]);
 
-                $conversation->users()->attach([
+                $participants = [
                     $authUserId => ['joined_at' => now()],
-                    $otherUserId => ['joined_at' => now()],
-                ]);
+                ];
+
+                if ($otherUserId !== $authUserId) {
+                    $participants[$otherUserId] = ['joined_at' => now()];
+                }
+
+                $conversation->users()->attach($participants);
 
                 return $conversation;
             });
