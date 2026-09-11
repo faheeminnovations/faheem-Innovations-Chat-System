@@ -77,7 +77,7 @@
         }
     </style>
 </head>
-<body class="h-screen bg-gray-100 antialiased">
+<body class="h-screen antialiased">
     @yield('content')
 </body>
 </html>

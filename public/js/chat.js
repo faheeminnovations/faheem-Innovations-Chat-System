@@ -175,6 +175,7 @@
         state.currentConversationId = id;
         state.lastMessageId = 0;
         state.renderedMessageIds = new Set();
+        appEl.classList.add('chat-open');
 
         $('empty-state').classList.add('hidden');
         $('chat-panel').classList.remove('hidden');
