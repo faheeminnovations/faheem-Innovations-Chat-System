@@ -195,6 +195,21 @@ body {
     box-shadow: 0 0 24px rgba(0, 0, 0, 0.45);
 }
 
+@media (display-mode: standalone) {
+    html,
+    body,
+    #app {
+        width: 100%;
+        min-width: 100%;
+        min-height: 100%;
+        margin: 0;
+    }
+
+    #app {
+        box-shadow: none;
+    }
+}
+
 #app > aside {
     width: 400px;
     min-width: 320px;
