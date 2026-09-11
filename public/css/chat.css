@@ -325,6 +325,31 @@ body {
     background: #2a3942 !important;
     color: var(--wa-text) !important;
 }
+.upload-progress {
+    padding: 0.45rem 1rem 0.55rem;
+    background: var(--wa-header);
+    color: var(--wa-muted);
+    font-size: 0.7rem;
+}
+.upload-progress-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.3rem;
+}
+.upload-progress-track {
+    height: 0.25rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #2a3942;
+}
+.upload-progress-bar {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--wa-accent);
+    transition: width 0.12s ease-out;
+}
 
 .msg-bubble {
     max-width: min(65%, 34rem);

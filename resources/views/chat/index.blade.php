@@ -65,6 +65,16 @@
 
             <div id="typing-indicator" class="px-5 text-xs text-gray-400 h-5 shrink-0"></div>
 
+            <div id="upload-progress" class="upload-progress hidden" role="status" aria-live="polite">
+                <div class="upload-progress-top">
+                    <span id="upload-progress-label">Uploading file</span>
+                    <span id="upload-progress-percent">0%</span>
+                </div>
+                <div class="upload-progress-track">
+                    <div id="upload-progress-bar" class="upload-progress-bar"></div>
+                </div>
+            </div>
+
             <form id="message-form" class="border-t border-gray-200 p-3 flex items-end gap-2 shrink-0">
                 <input type="file" id="file-input" accept="image/*,.zip,.pdf,.doc,.docx,.xls,.xlsx,.txt" class="hidden">
                 <button type="button" id="attach-btn" title="Attach a file"

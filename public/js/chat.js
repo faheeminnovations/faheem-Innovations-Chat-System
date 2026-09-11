@@ -5,6 +5,7 @@
     const AUTH_ID = parseInt(appEl.dataset.authId, 10);
     const AUTH_NAME = appEl.dataset.authName;
     const INITIAL_CONVERSATION_ID = appEl.dataset.initialConversation || null;
+    const MAX_UPLOAD_BYTES = 500 * 1024 * 1024;
 
     const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -80,6 +81,50 @@
         body: data instanceof FormData ? data : JSON.stringify(data || {}),
     });
     const apiDelete = (url) => api(url, { method: 'DELETE' });
+
+    function uploadMessage(url, formData) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            const progress = $('upload-progress');
+            const progressBar = $('upload-progress-bar');
+            const progressPercent = $('upload-progress-percent');
+
+            progress.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            progressPercent.textContent = '0%';
+
+            xhr.open('POST', url, true);
+            xhr.withCredentials = true;
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.setRequestHeader('X-CSRF-TOKEN', CSRF_TOKEN);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            xhr.upload.addEventListener('progress', (event) => {
+                if (!event.lengthComputable) return;
+                const percent = Math.round((event.loaded / event.total) * 100);
+                progressBar.style.width = `${percent}%`;
+                progressPercent.textContent = `${percent}%`;
+            });
+
+            xhr.addEventListener('load', () => {
+                let body = {};
+                try { body = xhr.responseText ? JSON.parse(xhr.responseText) : {}; } catch (e) { /* invalid response */ }
+
+                if (xhr.status === 401) {
+                    window.location.href = '/login';
+                    return reject(new Error('Your session has expired.'));
+                }
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    return reject(new Error(body.message || `Upload failed (${xhr.status})`));
+                }
+                resolve(body);
+            });
+
+            xhr.addEventListener('error', () => reject(new Error('Upload failed. Please try again.')));
+            xhr.addEventListener('abort', () => reject(new Error('Upload cancelled.')));
+            xhr.send(formData);
+        });
+    }
 
     // ---------- conversations sidebar ----------
 
@@ -314,7 +359,9 @@
         $('message-form').classList.add('is-sending');
         $('send-btn').disabled = true;
         try {
-            const msg = await apiPost(`/app/conversations/${id}/messages`, formData);
+            const msg = state.selectedFile
+                ? await uploadMessage(`/app/conversations/${id}/messages`, formData)
+                : await apiPost(`/app/conversations/${id}/messages`, formData);
             appendMessage(msg, true);
             state.lastMessageId = Math.max(state.lastMessageId, msg.id);
             input.value = '';
@@ -323,6 +370,7 @@
         } catch (err) {
             alert(err.message);
         } finally {
+            $('upload-progress').classList.add('hidden');
             state.isSending = false;
             $('message-form').classList.remove('is-sending');
             $('send-btn').disabled = false;
@@ -351,9 +399,15 @@
     $('file-input').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
+        if (file.size > MAX_UPLOAD_BYTES) {
+            alert('File size must be 500 MB or less.');
+            clearFilePreview();
+            return;
+        }
         state.selectedFile = file;
         const preview = $('file-preview');
         preview.textContent = `📎 ${file.name} ✕`;
+        $('upload-progress-label').textContent = `Uploading ${file.name}`;
         preview.classList.remove('hidden');
         preview.onclick = clearFilePreview;
     });
