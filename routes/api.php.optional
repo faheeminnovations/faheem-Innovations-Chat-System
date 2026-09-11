@@ -1,0 +1,43 @@
+<?php
+
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\UserController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Faheem Innovations - Chat API Routes
+|--------------------------------------------------------------------------
+| Polling-based chat backend (no websockets). Merge this file into your
+| Laravel app's routes/api.php, or use Route::prefix()/include as-is.
+*/
+
+// Public
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+// Authenticated (Sanctum)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/heartbeat', [UserController::class, 'heartbeat']);
+
+    Route::get('/conversations', [ConversationController::class, 'index']);
+    Route::post('/conversations', [ConversationController::class, 'store']);
+    Route::get('/conversations/{conversation}', [ConversationController::class, 'show']);
+    Route::post('/conversations/{conversation}/participants', [ConversationController::class, 'addParticipants']);
+    Route::delete('/conversations/{conversation}/leave', [ConversationController::class, 'leave']);
+    Route::delete('/conversations/{conversation}', [ConversationController::class, 'destroy']);
+
+    Route::get('/conversations/{conversation}/messages', [MessageController::class, 'index']);
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store']);
+    Route::post('/conversations/{conversation}/messages/read', [MessageController::class, 'markRead']);
+    Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
+
+    Route::post('/conversations/{conversation}/typing', [MessageController::class, 'typing']);
+    Route::get('/conversations/{conversation}/typing', [MessageController::class, 'typingUsers']);
+});

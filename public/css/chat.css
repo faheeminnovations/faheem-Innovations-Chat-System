@@ -1,0 +1,106 @@
+/* Faheem Chat - extra styling beyond Tailwind utilities */
+
+#messages-container::-webkit-scrollbar,
+#conversation-list::-webkit-scrollbar,
+#user-search-results::-webkit-scrollbar {
+    width: 6px;
+}
+#messages-container::-webkit-scrollbar-thumb,
+#conversation-list::-webkit-scrollbar-thumb,
+#user-search-results::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.conversation-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.15s ease;
+}
+.conversation-item:hover {
+    background-color: #f9fafb;
+}
+.conversation-item.active {
+    background-color: #eef2ff;
+}
+
+.msg-bubble {
+    max-width: 70%;
+    padding: 0.5rem 0.85rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+.msg-bubble.mine {
+    background-color: #4f46e5;
+    color: white;
+    border-bottom-right-radius: 0.25rem;
+}
+.msg-bubble.theirs {
+    background-color: white;
+    color: #1f2937;
+    border: 1px solid #e5e7eb;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.avatar-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background-color: #e0e7ff;
+    color: #4338ca;
+    font-weight: 600;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.online-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 9999px;
+    background-color: #22c55e;
+    border: 2px solid white;
+}
+.offline-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 9999px;
+    background-color: #9ca3af;
+    border: 2px solid white;
+}
+
+.unread-badge {
+    background-color: #4f46e5;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.3rem;
+}
+
+.user-search-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.user-search-item:hover {
+    background-color: #f9fafb;
+}
+.user-search-item.selected {
+    background-color: #eef2ff;
+}

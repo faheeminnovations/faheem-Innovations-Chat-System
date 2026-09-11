@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="128" viewBox="0 0 520 128" role="img" aria-labelledby="title desc">
+  <title id="title">Faheem Innovations</title>
+  <desc id="desc">Faheem Innovations company logo</desc>
+  <rect width="520" height="128" rx="8" fill="#050b17"/>
+  <g fill="none" stroke-linecap="square" stroke-linejoin="miter" stroke-width="8">
+    <path d="M52 24 20 64l32 40" stroke="#f8fafc"/>
+    <path d="M76 24v80" stroke="#38bdf8"/>
+    <path d="M88 24h30M88 104h30" stroke="#38bdf8"/>
+    <path d="m142 24 32 40-32 40" stroke="#f8fafc"/>
+  </g>
+  <text x="202" y="57" fill="#dbeafe" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="700">Faheem</text>
+  <text x="202" y="96" fill="#dbeafe" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="700">Innovations</text>
+</svg>
