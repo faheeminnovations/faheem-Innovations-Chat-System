@@ -224,17 +224,26 @@ body {
 #new-chat-btn,
 #attach-btn,
 #close-modal-btn,
-#notifications-btn {
+#notifications-btn,
+#install-app-btn {
     color: var(--wa-muted) !important;
 }
 #new-chat-btn:hover,
 #attach-btn:hover,
-#notifications-btn:hover {
+#notifications-btn:hover,
+#install-app-btn:hover {
     background: var(--wa-hover) !important;
     color: var(--wa-text) !important;
 }
 .notifications-enabled {
     color: #25d366 !important;
+}
+.install-app-btn {
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
 }
 
 #conversation-list,

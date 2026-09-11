@@ -1,0 +1,19 @@
+{
+    "name": "Faheem Innovations Chat",
+    "short_name": "Faheem Chat",
+    "description": "Private conversations and file sharing by Faheem Innovations.",
+    "start_url": "/chat",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0b141a",
+    "theme_color": "#00a884",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/images/faheem-innovations-logo.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

@@ -8,6 +8,7 @@
     const MAX_UPLOAD_BYTES = 500 * 1024 * 1024;
 
     const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').content;
+    let deferredInstallPrompt = null;
 
     const state = {
         conversations: [],
@@ -83,6 +84,32 @@
         body: data instanceof FormData ? data : JSON.stringify(data || {}),
     });
     const apiDelete = (url) => api(url, { method: 'DELETE' });
+
+    function isIosDevice() {
+        return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+    }
+
+    function showInstallButton() {
+        const button = $('install-app-btn');
+        if (button) button.classList.remove('hidden');
+    }
+
+    async function installApp() {
+        if (deferredInstallPrompt) {
+            deferredInstallPrompt.prompt();
+            await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            $('install-app-btn').classList.add('hidden');
+            return;
+        }
+
+        if (isIosDevice()) {
+            alert('Safari mein Share button dabayen, phir Add to Home Screen select karein.');
+            return;
+        }
+
+        alert('Browser menu kholen aur “Install app” ya “Add to Home screen” select karein.');
+    }
 
     function updateNotificationTitle() {
         document.title = state.notificationCount > 0
@@ -469,6 +496,7 @@
     });
 
     $('notifications-btn').addEventListener('click', enableNotifications);
+    $('install-app-btn').addEventListener('click', installApp);
     window.addEventListener('focus', () => {
         state.notificationCount = 0;
         updateNotificationTitle();
@@ -669,6 +697,9 @@
     // ---------- boot ----------
 
     async function init() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch((error) => console.error('Service worker registration failed', error));
+        }
         await loadConversations();
         startHeartbeat();
         state.timers.conversations = setInterval(loadConversations, 4000);
@@ -678,6 +709,19 @@
             openConversation(initialConversationId);
         }
     }
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredInstallPrompt = event;
+        showInstallButton();
+    });
+
+    window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        $('install-app-btn').classList.add('hidden');
+    });
+
+    if (isIosDevice() && !window.navigator.standalone) showInstallButton();
 
     init();
 })();
