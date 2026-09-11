@@ -67,7 +67,7 @@
 
             <div id="upload-progress" class="upload-progress hidden" role="status" aria-live="polite">
                 <div class="upload-progress-top">
-                    <span id="upload-progress-label">Uploading file</span>
+                    <span class="upload-progress-status"><span class="upload-spinner" aria-hidden="true"></span><span id="upload-progress-label">Uploading file</span></span>
                     <span id="upload-progress-percent">0%</span>
                 </div>
                 <div class="upload-progress-track">
@@ -79,6 +79,7 @@
                 <input type="file" id="file-input" accept="image/*,.zip,.pdf,.doc,.docx,.xls,.xlsx,.txt" class="hidden">
                 <button type="button" id="attach-btn" title="Attach a file"
                     class="w-10 h-10 shrink-0 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 text-lg">📎</button>
+                <span class="upload-limit-hint" title="Maximum file size">Max 500 MB</span>
                 <div id="file-preview" class="hidden text-xs text-gray-600 bg-gray-100 rounded-lg px-3 py-2 mr-1"></div>
                 <textarea id="message-input" rows="1" placeholder="Type a message…"
                     class="flex-1 resize-none rounded-2xl border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 max-h-32"></textarea>

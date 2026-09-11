@@ -358,6 +358,8 @@
         state.isSending = true;
         $('message-form').classList.add('is-sending');
         $('send-btn').disabled = true;
+        $('attach-btn').disabled = Boolean(state.selectedFile);
+        $('upload-progress-label').textContent = state.selectedFile ? `Uploading ${state.selectedFile.name}` : 'Sending message';
         try {
             const msg = state.selectedFile
                 ? await uploadMessage(`/app/conversations/${id}/messages`, formData)
@@ -374,6 +376,7 @@
             state.isSending = false;
             $('message-form').classList.remove('is-sending');
             $('send-btn').disabled = false;
+            $('attach-btn').disabled = false;
         }
     });
 
@@ -400,7 +403,7 @@
         const file = e.target.files[0];
         if (!file) return;
         if (file.size > MAX_UPLOAD_BYTES) {
-            alert('File size must be 500 MB or less.');
+            alert('You can upload a file up to 500 MB.');
             clearFilePreview();
             return;
         }
