@@ -11,8 +11,8 @@
     "icons": [
         {
             "src": "/images/faheem-innovations-logo.svg",
-            "sizes": "any",
             "type": "image/svg+xml",
+            "sizes": "any",
             "purpose": "any maskable"
         }
     ]

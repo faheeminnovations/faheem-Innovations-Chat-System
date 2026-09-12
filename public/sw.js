@@ -1,4 +1,4 @@
-const CACHE_NAME = 'faheem-chat-shell-v3';
+const CACHE_NAME = 'faheem-chat-shell-v4';
 const APP_SHELL = [
     '/chat',
     '/css/chat.css',

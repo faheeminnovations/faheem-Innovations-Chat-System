@@ -9,6 +9,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Faheem Chat">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/faheem-innovations-logo.svg') }}?v={{ filemtime(public_path('images/faheem-innovations-logo.svg')) }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/faheem-innovations-logo.svg') }}?v={{ filemtime(public_path('images/faheem-innovations-logo.svg')) }}">
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
     <title>@yield('title', 'Faheem Innovations')</title>
     <script src="https://cdn.tailwindcss.com"></script>
