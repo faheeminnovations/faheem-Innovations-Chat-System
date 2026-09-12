@@ -146,8 +146,6 @@ class ConversationController extends Controller
     {
         $this->authorizeParticipant($request, $conversation);
 
-        abort_unless($request->user()->isAdmin(), 403, 'Only an admin can invite users to groups.');
-
         if (! $conversation->isGroup()) {
             return response()->json(['message' => 'Only group conversations support adding participants.'], 422);
         }

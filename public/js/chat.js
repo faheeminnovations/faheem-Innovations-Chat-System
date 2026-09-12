@@ -22,6 +22,7 @@
         selectedUserIds: new Set(),
         selectedUsersMap: new Map(),
         inviteFromNewChat: false,
+        addingParticipantsToConversationId: null,
         notificationCount: 0,
         audioContext: null,
         timers: { conversations: null, messages: null, typing: null, heartbeat: null },
@@ -355,10 +356,15 @@
             <div class="min-w-0">
                 <p class="text-sm font-semibold text-gray-800 truncate">${escapeHtml(conv.title)}</p>
                 <p class="text-xs ${isOnline ? 'text-green-600' : 'text-gray-400'}">${escapeHtml(subtitle)}</p>
-            </div>`;
+            </div>
+            ${conv.type === 'group' ? '<button id="add-group-user-btn" type="button" class="ml-auto text-xs font-semibold text-indigo-600 hover:text-indigo-800" title="Add users to group">+ Add users</button>' : ''}`;
         $('chat-back-btn').addEventListener('click', () => {
             appEl.classList.remove('chat-open');
         });
+        const addGroupUserButton = $('add-group-user-btn');
+        if (addGroupUserButton) {
+            addGroupUserButton.addEventListener('click', () => openParticipantPicker(conv.id));
+        }
     }
 
     // ---------- messages ----------
@@ -569,6 +575,7 @@
 
     function resetModal() {
         state.newChatMode = 'private';
+        state.addingParticipantsToConversationId = null;
         state.selectedUserIds = new Set();
         state.selectedUsersMap = new Map();
         $('group-name-input').value = '';
@@ -577,6 +584,7 @@
         $('user-search-results').innerHTML = '';
         $('selected-users').innerHTML = '';
         $('create-chat-btn').disabled = true;
+        $('create-chat-btn').textContent = 'Start chat';
         const groupButton = document.querySelector('[data-mode="group"]');
         if (groupButton) groupButton.classList.toggle('hidden', !IS_ADMIN);
         document.querySelectorAll('.chat-mode-btn').forEach((btn) => setModeBtnStyle(btn, btn.dataset.mode === 'private'));
@@ -699,16 +707,36 @@
 
     $('create-chat-btn').addEventListener('click', async () => {
         try {
-            const conv = await apiPost('/app/conversations', {
-                type: 'group',
-                name: $('group-name-input').value.trim(),
-                user_ids: Array.from(state.selectedUserIds),
-            });
+            const conv = state.addingParticipantsToConversationId
+                ? await apiPost(`/app/conversations/${state.addingParticipantsToConversationId}/participants`, {
+                    user_ids: Array.from(state.selectedUserIds),
+                })
+                : await apiPost('/app/conversations', {
+                    type: 'group',
+                    name: $('group-name-input').value.trim(),
+                    user_ids: Array.from(state.selectedUserIds),
+                });
             modal.classList.add('hidden');
             await loadConversations();
-            openConversation(conv.id);
+            if (state.addingParticipantsToConversationId) {
+                state.addingParticipantsToConversationId = null;
+                openConversation(conv.id);
+            } else {
+                openConversation(conv.id);
+            }
         } catch (e) { alert(e.message); }
     });
+
+    function openParticipantPicker(conversationId) {
+        resetModal();
+        state.newChatMode = 'group';
+        state.addingParticipantsToConversationId = conversationId;
+        $('group-name-wrap').classList.add('hidden');
+        $('create-chat-btn').textContent = 'Add users';
+        $('create-chat-btn').disabled = true;
+        modal.classList.remove('hidden');
+        $('user-search-input').focus();
+    }
 
     const inviteModal = $('invite-user-modal');
     const inviteButton = $('invite-user-btn');
