@@ -23,6 +23,7 @@
         selectedUsersMap: new Map(),
         inviteFromNewChat: false,
         addingParticipantsToConversationId: null,
+        existingParticipantIds: new Set(),
         notificationCount: 0,
         audioContext: null,
         timers: { conversations: null, messages: null, typing: null, heartbeat: null },
@@ -576,6 +577,7 @@
     function resetModal() {
         state.newChatMode = 'private';
         state.addingParticipantsToConversationId = null;
+        state.existingParticipantIds = new Set();
         state.selectedUserIds = new Set();
         state.selectedUsersMap = new Map();
         $('group-name-input').value = '';
@@ -613,7 +615,8 @@
     async function searchUsers(q) {
         try {
             const res = await apiGet(`/app/users?q=${encodeURIComponent(q)}`);
-            renderUserResults(res.data || res);
+            const users = (res.data || res).filter((user) => !state.existingParticipantIds.has(Number(user.id)));
+            renderUserResults(users);
         } catch (e) { console.error(e); }
     }
 
@@ -731,6 +734,8 @@
         resetModal();
         state.newChatMode = 'group';
         state.addingParticipantsToConversationId = conversationId;
+        const conversation = findConversation(conversationId);
+        state.existingParticipantIds = new Set((conversation?.participants || []).map((user) => Number(user.id)));
         $('group-name-wrap').classList.add('hidden');
         $('create-chat-btn').textContent = 'Add users';
         $('create-chat-btn').disabled = true;
