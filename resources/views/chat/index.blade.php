@@ -100,11 +100,11 @@
     <div id="new-chat-modal" class="hidden fixed inset-0 bg-black/30 flex items-center justify-center z-50">
         <div class="bg-white w-full max-w-md rounded-xl shadow-lg p-5">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="font-semibold text-gray-800">New conversation</h2>
+                <h2 id="new-chat-modal-title" class="font-semibold text-gray-800">New conversation</h2>
                 <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
             </div>
 
-            <div class="flex gap-2 mb-4">
+            <div id="chat-mode-switcher" class="flex gap-2 mb-4">
                 <button type="button" data-mode="private" class="chat-mode-btn flex-1 text-sm py-1.5 rounded-lg border border-indigo-600 bg-indigo-600 text-white">Direct message</button>
                 <button type="button" data-mode="group" class="chat-mode-btn flex-1 text-sm py-1.5 rounded-lg border border-gray-300 text-gray-600">Group chat</button>
             </div>

@@ -582,6 +582,8 @@
         state.selectedUsersMap = new Map();
         $('group-name-input').value = '';
         $('group-name-wrap').classList.add('hidden');
+        $('new-chat-modal-title').textContent = 'New conversation';
+        $('chat-mode-switcher').classList.remove('hidden');
         $('user-search-input').value = '';
         $('user-search-results').innerHTML = '';
         $('selected-users').innerHTML = '';
@@ -737,6 +739,8 @@
         const conversation = findConversation(conversationId);
         state.existingParticipantIds = new Set((conversation?.participants || []).map((user) => Number(user.id)));
         $('group-name-wrap').classList.add('hidden');
+        $('new-chat-modal-title').textContent = 'Add users to group';
+        $('chat-mode-switcher').classList.add('hidden');
         $('create-chat-btn').textContent = 'Add users';
         $('create-chat-btn').disabled = true;
         modal.classList.remove('hidden');
