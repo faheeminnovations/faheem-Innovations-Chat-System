@@ -69,7 +69,10 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->orderBy('name')->paginate(20);
+        $users = $query
+            ->orderByRaw("CASE WHEN email = 'faheeminnovations@gmail.com' THEN 0 ELSE 1 END")
+            ->orderBy('name')
+            ->paginate(20);
 
         return response()->json($users);
     }
