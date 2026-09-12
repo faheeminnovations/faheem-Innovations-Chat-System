@@ -711,7 +711,9 @@
             return;
         }
         btn.classList.remove('hidden');
-        btn.disabled = !(state.selectedUserIds.size >= 1 && $('group-name-input').value.trim().length > 0);
+        const hasGroupName = $('group-name-input').value.trim().length > 0;
+        const isAddingToExistingGroup = Boolean(state.addingParticipantsToConversationId);
+        btn.disabled = !(state.selectedUserIds.size >= 1 && (isAddingToExistingGroup || hasGroupName));
     }
 
     $('create-chat-btn').addEventListener('click', async () => {
