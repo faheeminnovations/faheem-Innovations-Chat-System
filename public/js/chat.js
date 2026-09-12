@@ -587,6 +587,7 @@
         $('user-search-input').value = '';
         $('user-search-results').innerHTML = '';
         $('selected-users').innerHTML = '';
+        $('create-chat-btn').classList.add('hidden');
         $('create-chat-btn').disabled = true;
         $('create-chat-btn').textContent = 'Start chat';
         const groupButton = document.querySelector('[data-mode="group"]');
@@ -599,6 +600,7 @@
             state.newChatMode = btn.dataset.mode;
             document.querySelectorAll('.chat-mode-btn').forEach((b) => setModeBtnStyle(b, b === btn));
             $('group-name-wrap').classList.toggle('hidden', state.newChatMode !== 'group');
+            $('create-chat-btn').classList.toggle('hidden', state.newChatMode !== 'group');
             updateCreateButtonState();
         });
     });
@@ -704,9 +706,11 @@
     function updateCreateButtonState() {
         const btn = $('create-chat-btn');
         if (state.newChatMode !== 'group') {
+            btn.classList.add('hidden');
             btn.disabled = true;
             return;
         }
+        btn.classList.remove('hidden');
         btn.disabled = !(state.selectedUserIds.size >= 1 && $('group-name-input').value.trim().length > 0);
     }
 
@@ -741,6 +745,7 @@
         $('group-name-wrap').classList.add('hidden');
         $('new-chat-modal-title').textContent = 'Add users to group';
         $('chat-mode-switcher').classList.add('hidden');
+        $('create-chat-btn').classList.remove('hidden');
         $('create-chat-btn').textContent = 'Add users';
         $('create-chat-btn').disabled = true;
         modal.classList.remove('hidden');
